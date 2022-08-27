@@ -17,8 +17,7 @@ export const createApiHandler = <
       return
     }
 
-    const data = req.body
-    console.log(`action: ${action}, type: ${type},\ndata: ${JSON.stringify(data)}`)
+    // console.log(`action: ${action}, type: ${type},\ndata: ${JSON.stringify(data)}`)
 
     const handler = type === 'query' ? queries[action] : type === 'mutation' ? mutations[action] : undefined
     if (!handler) {
@@ -30,7 +29,7 @@ export const createApiHandler = <
       ? await getContext({ type: 'client', req })
       : undefined
 
-    console.log('handler', context, data)
+    const data = req.body
     const result = await handler(context as SliceContextFnResult, data)
 
     res.status(200).json(result)
