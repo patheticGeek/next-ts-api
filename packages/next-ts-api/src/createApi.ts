@@ -56,18 +56,21 @@ export type CreateApiSliceOptions<
   mutations: SliceMutations
 }
 
+type QueryHookKey<Key extends any> = Key extends string ? `use${Capitalize<Key>}Query` : Key
+type MutationHookKey<Key extends any> = Key extends string ? `use${Capitalize<Key>}Mutation` : Key
+
 type Hooks<
   SliceContextFnResult extends any | undefined,
   SliceQueries extends Queries<SliceContextFnResult>,
   SliceMutations extends Mutations<SliceContextFnResult>
 > = {
-  [Query in keyof SliceQueries]: 
-    SliceQueries[Query] extends Resolver<SliceContextFnResult, infer Data, infer Result>
+  [QueryKey in keyof SliceQueries as QueryHookKey<QueryKey>]: 
+    SliceQueries[QueryKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
       ? UseTypedQuery<Data, Result>
       : undefined
 } & {
-  [Mutation in keyof SliceMutations]: 
-    SliceMutations[Mutation] extends Resolver<SliceContextFnResult, infer Data, infer Result>
+  [MutationKey in keyof SliceMutations as MutationHookKey<MutationKey>]: 
+    SliceMutations[MutationKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
       ? UseTypedMutation<Data, Result>
       : undefined
 }

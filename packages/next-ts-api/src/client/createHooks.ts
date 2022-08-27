@@ -13,7 +13,9 @@ export const createHooks = (route: string, queries: string[], mutations: string[
         options
       )
     }
-    hooks[queryKey] = useQuery
+    const capitalize = queryKey.slice(0,1).toUpperCase() + queryKey.slice(1)
+    const key = `use${capitalize}Query`
+    hooks[key] = useQuery
   }
 
   for (const mutationKey of mutations) {
@@ -25,7 +27,9 @@ export const createHooks = (route: string, queries: string[], mutations: string[
         options
       )
     }
-    hooks[mutationKey] = useMutation
+    const capitalize = mutationKey.slice(0,1).toUpperCase() + mutationKey.slice(1)
+    const key = `use${capitalize}Mutation`
+    hooks[key] = useMutation
   }
 
   return hooks
