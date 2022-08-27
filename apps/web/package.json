@@ -9,19 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.2.1",
     "next": "12.2.3",
+    "next-ts-api": "workspace:^0.0.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "ui": "workspace:*"
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
-    "eslint-config-custom": "workspace:*",
-    "eslint": "7.32.0",
-    "next-transpile-modules": "9.0.0",
-    "tsconfig": "workspace:*",
     "@types/node": "^17.0.12",
     "@types/react": "17.0.48",
+    "eslint": "7.32.0",
+    "eslint-config-custom": "workspace:*",
+    "next-transpile-modules": "9.0.0",
+    "tsconfig": "workspace:*",
     "typescript": "^4.5.3"
   }
 }

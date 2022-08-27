@@ -1,5 +1,5 @@
-const withTM = require("next-transpile-modules")(["ui"]);
+const {withNextTsAPI} = require('next-ts-api')
 
-module.exports = withTM({
+module.exports = withNextTsAPI({
   reactStrictMode: true,
 });

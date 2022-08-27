@@ -1,0 +1,5 @@
+{
+  "main": "../dist/loader-client.js",
+  "module": "../dist/loader-client.mjs",
+  "types": "../dist/loader-client.d.ts"
+}
