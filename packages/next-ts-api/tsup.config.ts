@@ -6,7 +6,7 @@ export default defineConfig({
   entry: [
     "src/index.ts",
     "src/loader-client.ts",
-    "src/loader-server.ts",
+    "src/loader-api.ts",
     "src/client/index.ts",
     "src/server.ts",
   ],

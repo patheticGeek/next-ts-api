@@ -9,7 +9,7 @@
     "./loader-client/package.json",
     "./client/package.json",
     "./dist/**/*",
-    "./loader-client/package.json",
+    "./loader-api/package.json",
     "./server/package.json"
   ],
   "scripts": {
@@ -24,7 +24,6 @@
     "acorn-walk": "^8.2.0",
     "astring": "^1.8.3",
     "next": "12.2.3",
-    "next-ts-api": "workspace:^0.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "tsup": "^6.2.2",

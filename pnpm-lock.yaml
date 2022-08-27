@@ -74,7 +74,6 @@ importers:
       eslint: 7.32.0
       eslint-config-custom: workspace:*
       next: 12.2.3
-      next-ts-api: workspace:^0.0.1
       react: 17.0.2
       react-dom: 17.0.2
       tsconfig: workspace:*
@@ -89,7 +88,6 @@ importers:
       acorn-walk: 8.2.0
       astring: 1.8.3
       next: 12.2.3_30d2e67a3fd79fb346d205915ee90910
-      next-ts-api: 'link:'
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       tsup: 6.2.2_typescript@4.7.4

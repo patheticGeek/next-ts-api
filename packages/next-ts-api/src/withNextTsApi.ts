@@ -35,7 +35,7 @@ export const withNextTsAPI = (given: NextConfig = {}): NextConfig => {
         issuerLayer: { or: ["api"] },
         use: [
           {
-            loader: 'next-ts-api/loader-server',
+            loader: 'next-ts-api/loader-api',
           },
           context.defaultLoaders.babel,
         ],
