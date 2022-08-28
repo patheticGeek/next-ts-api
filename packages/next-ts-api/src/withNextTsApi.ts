@@ -32,7 +32,7 @@ export const withNextTsAPI = (given: NextConfig = {}): NextConfig => {
     webpack(config: Configuration, context) {
       config.module?.rules?.unshift({
         test: testRegex,
-        issuerLayer: { or: ["api"] },
+        issuerLayer: ["api"],
         use: [
           {
             loader: 'next-ts-api/loader-api',

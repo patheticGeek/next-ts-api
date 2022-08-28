@@ -1,5 +1,0 @@
-{
-  "main": "../dist/loader-server.js",
-  "module": "../dist/loader-server.mjs",
-  "types": "../dist/loader-server.d.ts"
-}

@@ -8,11 +8,11 @@ export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((rout
  * Create a fetcher from `fetch` by passing custom options
  * Could be useful for adding credentials etc.
  *
- * ```tsx
+ * ```ts
  * // Pass in an object
  * const fetcher = createFetcher({ credentials: 'include' })
  * // Or it can be a function too
- * const fetcher = createFetcher((route, data) => {
+ * const fetcher = createFetcher((route, type, action, data) => {
  *  if (route === '/api/users') {
  *    return { headers: { 'token': localStorage.get('token') } }
  *  }
@@ -48,7 +48,6 @@ export const createFetcher = (fetchOptions: CustomFetcherOptions) => {
 
     const body = JSON.stringify(data)
     const result = await fetch(`${route}?${params.toString()}`, { body, ...options })
-    console.log('result', result)
     return (await result.json())
   }
 

@@ -58,6 +58,8 @@ export type CreateApiSliceOptions<
 
 type QueryHookKey<Key extends any> = Key extends string ? `use${Capitalize<Key>}Query` : Key
 type MutationHookKey<Key extends any> = Key extends string ? `use${Capitalize<Key>}Mutation` : Key
+type NewQueryKey<Key extends any> = Key extends string ? `${Key}Query` : Key
+type NewMutationKey<Key extends any> = Key extends string ? `${Key}Mutation` : Key
 
 type Hooks<
   SliceContextFnResult extends any | undefined,
@@ -79,8 +81,8 @@ type ReturnedQueries<
   SliceContextFnResult extends any | undefined,
   SliceQueries extends Queries<SliceContextFnResult>,
 > = {
-  [Query in keyof SliceQueries]: 
-    SliceQueries[Query] extends Resolver<SliceContextFnResult, infer Data, infer Result>
+  [QueryKey in keyof SliceQueries as NewQueryKey<QueryKey>]: 
+    SliceQueries[QueryKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
       ? (req: GetServerSidePropsContext['req'], client: QueryClient, data: Data) => Result
       : undefined
 }
@@ -89,8 +91,8 @@ type ReturnedMutations<
   SliceContextFnResult extends any | undefined,
   SliceMutations extends Mutations<SliceContextFnResult>
 > = {
-  [Mutation in keyof SliceMutations]: 
-    SliceMutations[Mutation] extends Resolver<SliceContextFnResult, infer Data, infer Result>
+  [MutationKey in keyof SliceMutations as NewMutationKey<MutationKey>]:
+    SliceMutations[MutationKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
       ? (req: GetServerSidePropsContext['req'], data: Data) => Result
       : undefined
 }
@@ -102,13 +104,11 @@ export type ApiSlice<
   SliceContextFnResult extends any | undefined,
   SliceQueries extends Queries<SliceContextFnResult>,
   SliceMutations extends Mutations<SliceContextFnResult>
-> = Hooks<SliceContextFnResult, SliceQueries, SliceMutations>
-// TODO
-// [
-//   Hooks<SliceContextFnResult, SliceQueries, SliceMutations>,
-//   ReturnedQueries<SliceContextFnResult, SliceQueries>,
-//   ReturnedMutations<SliceContextFnResult, SliceMutations>
-// ]
+> = {
+  client: Hooks<SliceContextFnResult, SliceQueries, SliceMutations>
+  // TODO 
+  // server: ReturnedQueries<SliceContextFnResult, SliceQueries> & ReturnedMutations<SliceContextFnResult, SliceMutations>
+}
 
 /**
  * Dummy function for types

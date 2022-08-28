@@ -17,8 +17,6 @@ export const createApiHandler = <
       return
     }
 
-    // console.log(`action: ${action}, type: ${type},\ndata: ${JSON.stringify(data)}`)
-
     const handler = type === 'query' ? queries[action] : type === 'mutation' ? mutations[action] : undefined
     if (!handler) {
       res.status(404).json({ error: `No action ${action} in ${type}` })

@@ -13,10 +13,10 @@ const loader: LoaderDefinition = function (
   const ast = parse(content, { ecmaVersion: "latest", sourceType: "module" });
 
   simple(ast, {
-    ExportNamedDeclaration(node: any) {
+    VariableDeclaration(node: any) {
       // Find the declaration which is calling our func
-      const createDeclaration = node?.declaration?.declarations?.find((declaration: any) => {
-        return declaration?.init?.callee?.name.includes('createApi')
+      const createDeclaration = node?.declarations?.find((declaration: any) => {
+        return declaration?.init?.callee?.name === 'createApi'
       })
       if(!createDeclaration) return;
   
@@ -31,7 +31,7 @@ const loader: LoaderDefinition = function (
   })
 
   const output = `
-  import { createApiHandler } from 'next-ts-api/server';
+  import { createApiHandler } from 'next-ts-api/api';
   ${imports.join('\n')}
   export default createApiHandler(${content.slice(argPos.start, argPos.end)});
   `

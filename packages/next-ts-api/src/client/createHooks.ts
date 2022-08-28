@@ -23,7 +23,7 @@ export const createHooks = (route: string, queries: string[], mutations: string[
       const fetcher = useFetcher()
       return useReactMutation(
         [mutationKey],
-        async (data) => fetcher(route, 'mutation', mutationKey, data),
+        async (data: any) => fetcher(route, 'mutation', mutationKey, data),
         options
       )
     }
@@ -32,5 +32,5 @@ export const createHooks = (route: string, queries: string[], mutations: string[
     hooks[key] = useMutation
   }
 
-  return hooks
+  return { client: { ...hooks } }
 }

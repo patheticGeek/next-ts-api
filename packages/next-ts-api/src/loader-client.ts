@@ -14,9 +14,10 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
   _sourcemaps,
   _additionalData
 ) {
-  let hooksName = ''
+  let varName = ''
   let queries: string[] = []
   let mutations: string[]  = []
+  let regionToRemove = { start: 0, end: 0 }
 
   const { projectDir, pageExtensionsRegex, basePath } =
     this.getOptions();
@@ -30,22 +31,24 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
   const ast = parse(content, { ecmaVersion: "latest", sourceType: "module" });
 
   simple(ast, {
-    ExportNamedDeclaration(node: any) {
+    VariableDeclaration(node: any) {
       // Find the declaration which is calling our func
-      const createDeclaration = node?.declaration?.declarations?.find((declaration: any) => {
-        return declaration?.init?.callee?.name.includes('createApi')
+      const createDeclaration = node?.declarations?.find((declaration: any) => {
+        return declaration?.init?.callee?.name === 'createApi'
       })
       if(!createDeclaration) return;
 
+      regionToRemove = { start: node.start, end: node.end }
+
       // get the export name from the declaration
-      hooksName = createDeclaration.id.name
+      varName = createDeclaration.id.name
   
       // get the keys of queries and mutations
       createDeclaration.init.arguments[0].properties.forEach((property: any) => {
-        if(property.key.name === 'queries') {
+        if (property.key.name === 'queries') {
           queries = property.value.properties.map((property: any) => property.key.name)
         }
-        if(property.key.name === 'mutations') {
+        if (property.key.name === 'mutations') {
           mutations = property.value.properties.map((property: any) => property.key.name)
         }
       })
@@ -54,7 +57,12 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
 
   const output = `
   import { createHooks } from 'next-ts-api/client';
-  export const ${hooksName} = createHooks("${apiPage}", [${queries.map(name => `"${name}"`).join(',')}], [${mutations.map(name => `"${name}"`).join(',')}]);
+
+  ${content.slice(0, regionToRemove.start)}
+
+  const ${varName} = createHooks("${apiPage}", [${queries.map(name => `"${name}"`).join(',')}], [${mutations.map(name => `"${name}"`).join(',')}]);
+
+  ${content.slice(regionToRemove.end)}
   `
 
   return output;

@@ -8,7 +8,7 @@ export default defineConfig({
     "src/loader-client.ts",
     "src/loader-api.ts",
     "src/client/index.ts",
-    "src/server.ts",
+    "src/api.ts"
   ],
   external: ["next/server", "next", "react"],
   format: ["cjs", "esm"],
