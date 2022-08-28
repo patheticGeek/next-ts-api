@@ -1,5 +1,5 @@
 import { AppProps } from "next/app";
-import { useCreateQueryClient, NextTsApiProvider } from "next-ts-api/dist/client";
+import { useCreateQueryClient, NextTsApiProvider } from "next-ts-api/client";
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = useCreateQueryClient()
