@@ -1,7 +1,9 @@
 import { createApi } from "next-ts-api";
 
 const userApi = createApi({
-  getContext: () => ({ hello: 'hello' }),
+  getContext: async () => {
+    return ({ hello: 'hello' })
+  },
   queries: {
     getUser: async (ctx, params: { name: string }) => {
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -17,3 +19,4 @@ const userApi = createApi({
 })
 
 export const { useCreateUserMutation, useGetUserQuery } = userApi.client
+export const { getUserQuery } = userApi.server

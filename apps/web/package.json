@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.2.1",
+    "@tanstack/react-query-devtools": "^4.2.3",
     "next": "12.2.3",
     "next-ts-api": "workspace:^0.0.1",
     "react": "17.0.2",

@@ -1,5 +1,5 @@
-import { withQueryClient } from "next-ts-api/client";
-import { useCreateUserMutation, useGetUserQuery } from "./api/test.rq";
+import { gSSPWithQueryClient } from "next-ts-api/client";
+import { useCreateUserMutation, useGetUserQuery, getUserQuery } from "./api/test.rq";
 
 export default function Web() {
   const { data, refetch, isFetching } = useGetUserQuery({ name: 'geek' })
@@ -18,6 +18,7 @@ export default function Web() {
   );
 }
 
-export const getServerSideProps = withQueryClient(async (client, { req }) => {
+export const getServerSideProps = gSSPWithQueryClient(async ({ req, queryClient }) => {
+  await getUserQuery({ req, queryClient }, {name: 'geek'})
   return { props: {} }
 })
