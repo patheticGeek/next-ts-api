@@ -75,8 +75,6 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
 
   ${isServer ? imports.join('\n') : ''}
 
-  ${content.slice(0, regionToRemove.start)}
-
   const API_ROUTE = "${apiRoute}";
 
   const ${varName} = {
