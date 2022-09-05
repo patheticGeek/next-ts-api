@@ -7,7 +7,7 @@ export const createUseQuery = (route: string, key: string) => (data: any, option
   const fetcher = useFetcher()
   return useReactQuery(
     [key, data],
-    async () => fetcher({route, type: 'query', key, data}),
+    async ({ signal }) => fetcher({ route, type: 'query', key, data, signal }),
     options
   )
 }
@@ -16,7 +16,7 @@ export const createUseMutation = (route: string, key: string) => (options: any) 
   const fetcher = useFetcher()
   return useReactMutation(
     [key],
-    async (data: any) => fetcher({route, type: 'mutation', key, data}),
+    async (data: any) => fetcher({ route, type: 'mutation', key, data }),
     options
   )
 }

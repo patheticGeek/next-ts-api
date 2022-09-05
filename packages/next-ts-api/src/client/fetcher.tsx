@@ -1,8 +1,10 @@
 import React, { createContext, useContext } from 'react'
 
-export type Fetcher = (params: { route: string, type: 'query' | 'mutation', key: string, data: any }) => Promise<any>
+type FetcherParams = { route: string, type: 'query' | 'mutation', key: string, data: any, signal?: AbortSignal }
 
-export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((route: string, key: string, data: any) => Omit<RequestInit, 'method' | 'body'>)
+export type Fetcher = (params: FetcherParams) => Promise<any>
+
+export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((params: Omit<FetcherParams, 'signal'>) => Omit<RequestInit, 'method' | 'body'>)
 
 /**
  * Create a fetcher from `fetch` by passing custom options
@@ -22,11 +24,11 @@ export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((rout
  */
 export const createFetcher = (fetchOptions: CustomFetcherOptions) => {
   const fetcher: Fetcher = async (params) => {
-    const { route, type, key, data } = params
+    const { route, type, key, data, signal } = params
 
     const customOptions =
       typeof fetchOptions === 'function'
-        ? fetchOptions(route, key, data)
+        ? fetchOptions({ route, key, data, type })
         : fetchOptions
 
     const options: RequestInit = {
@@ -44,7 +46,7 @@ export const createFetcher = (fetchOptions: CustomFetcherOptions) => {
     })
 
     const body = JSON.stringify({ data })
-    const result = await fetch(`${route}?${urlParams.toString()}`, { body, ...options })
+    const result = await fetch(`${route}?${urlParams.toString()}`, { body, ...options, signal })
     const parsed = await result.json()
     if (parsed.error) throw new Error(parsed.error)
     return parsed.result
