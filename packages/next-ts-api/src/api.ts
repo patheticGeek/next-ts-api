@@ -11,15 +11,20 @@ export const createApiHandler = <
   const { getContext, queries, mutations } = options
   
   const apiHandler: NextApiHandler = async (req, res) => {
-    const { type, action } = req.query
-    if(typeof type !== 'string' || typeof action !== 'string') {
-      res.status(404).json({ error: `type & action params should be string` })
+    if(req.method !== 'POST') {
+      res.status(405).json({ error: `Only "POST" method not allowed` })
       return
     }
 
-    const handler = type === 'query' ? queries[action] : type === 'mutation' ? mutations[action] : undefined
+    const { type, key } = req.query
+    if (typeof type !== 'string' || typeof key !== 'string') {
+      res.status(404).json({ error: `"type" & "key" params should be string` })
+      return
+    }
+
+    const handler = type === 'query' ? queries[key] : type === 'mutation' ? mutations[key] : undefined
     if (!handler) {
-      res.status(404).json({ error: `No action ${action} in ${type}` })
+      res.status(404).json({ error: `No ${type}.${key}` })
       return
     }
 
@@ -27,10 +32,10 @@ export const createApiHandler = <
       ? await getContext({ type: 'client', req })
       : undefined
 
-    const data = req.body
+    const data = req.body.data
     const result = await handler(context as SliceContextFnResult, data)
 
-    res.status(200).json(result)
+    res.status(200).json({ result })
   }
 
   return apiHandler

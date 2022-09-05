@@ -41,14 +41,16 @@ export const createFetcher = (fetchOptions: CustomFetcherOptions) => {
       }
     }
 
-    const params = new URLSearchParams({
-      action,
+    const urlParams = new URLSearchParams({
+      key,
       type
     })
 
-    const body = JSON.stringify(data)
-    const result = await fetch(`${route}?${params.toString()}`, { body, ...options })
-    return (await result.json())
+    const body = JSON.stringify({ data })
+    const result = await fetch(`${route}?${urlParams.toString()}`, { body, ...options })
+    const parsed = await result.json()
+    if (parsed.error) throw new Error(parsed.error)
+    return parsed.result
   }
 
   return fetcher
