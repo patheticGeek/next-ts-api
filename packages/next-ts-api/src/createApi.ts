@@ -1,7 +1,6 @@
 import { GetServerSidePropsContext, NextApiRequest } from 'next'
 
-import { QueryClient } from '@tanstack/react-query'
-import { UseTypedMutation, UseTypedQuery } from './client/react-query'
+import { GSSPContext, UseTypedMutation, UseTypedQuery } from './client/react-query'
 
 /**
  * Resolver function
@@ -21,9 +20,9 @@ export type ContextFnParams =
 /**
  * Context function
  */
-export type ContextFn<Context = any> =
+export type ContextFn<ContextFnResult = any> =
   | undefined
-  | ((params: ContextFnParams) => Context | Promise<Context>)
+  | ((params: ContextFnParams) => ContextFnResult | Promise<ContextFnResult>)
 
 /**
  * Queries & mutations object
@@ -83,7 +82,7 @@ type ReturnedQueries<
 > = {
   [QueryKey in keyof SliceQueries as NewQueryKey<QueryKey>]: 
     SliceQueries[QueryKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
-      ? (req: GetServerSidePropsContext['req'], client: QueryClient, data: Data) => Result
+      ? (ctx: Pick<GSSPContext, 'req' | 'queryClient'>, data: Data) => Promise<Result>
       : undefined
 }
 
@@ -93,7 +92,7 @@ type ReturnedMutations<
 > = {
   [MutationKey in keyof SliceMutations as NewMutationKey<MutationKey>]:
     SliceMutations[MutationKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
-      ? (req: GetServerSidePropsContext['req'], data: Data) => Result
+      ? (ctx: Pick<GSSPContext, 'req' | 'queryClient'>, data: Data) => Promise<Result>
       : undefined
 }
 
@@ -106,8 +105,7 @@ export type ApiSlice<
   SliceMutations extends Mutations<SliceContextFnResult>
 > = {
   client: Hooks<SliceContextFnResult, SliceQueries, SliceMutations>
-  // TODO 
-  // server: ReturnedQueries<SliceContextFnResult, SliceQueries> & ReturnedMutations<SliceContextFnResult, SliceMutations>
+  server: ReturnedQueries<SliceContextFnResult, SliceQueries> & ReturnedMutations<SliceContextFnResult, SliceMutations>
 }
 
 /**

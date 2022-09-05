@@ -1,8 +1,8 @@
 import React, { createContext, useContext } from 'react'
 
-export type Fetcher = (route: string, type: 'query' | 'mutation', action: string, data: any) => Promise<any>
+export type Fetcher = (params: { route: string, type: 'query' | 'mutation', key: string, data: any }) => Promise<any>
 
-export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((route: string, action: string, data: any) => Omit<RequestInit, 'method' | 'body'>)
+export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((route: string, key: string, data: any) => Omit<RequestInit, 'method' | 'body'>)
 
 /**
  * Create a fetcher from `fetch` by passing custom options
@@ -12,7 +12,7 @@ export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((rout
  * // Pass in an object
  * const fetcher = createFetcher({ credentials: 'include' })
  * // Or it can be a function too
- * const fetcher = createFetcher((route, type, action, data) => {
+ * const fetcher = createFetcher((route, type, key, data) => {
  *  if (route === '/api/users') {
  *    return { headers: { 'token': localStorage.get('token') } }
  *  }
@@ -21,15 +21,12 @@ export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((rout
  * ```
  */
 export const createFetcher = (fetchOptions: CustomFetcherOptions) => {
-  const fetcher: Fetcher = async (
-    route: string,
-    type: 'query' | 'mutation',
-    action: string,
-    data: any
-  ) => {
+  const fetcher: Fetcher = async (params) => {
+    const { route, type, key, data } = params
+
     const customOptions =
       typeof fetchOptions === 'function'
-        ? fetchOptions(route, action, data)
+        ? fetchOptions(route, key, data)
         : fetchOptions
 
     const options: RequestInit = {

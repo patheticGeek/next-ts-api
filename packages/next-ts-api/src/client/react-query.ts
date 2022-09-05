@@ -2,10 +2,8 @@ import {
   dehydrate,
   QueryClient,
   QueryClientConfig,
-  useMutation as useReactMutation,
   UseMutationOptions,
   UseMutationResult,
-  useQuery as useReactQuery,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query'
@@ -42,23 +40,27 @@ export type UseTypedMutation<
  >
 ) => UseMutationResult<Result, Error, Data>
 
+export type GSSPContext<
+  Q extends ParsedUrlQuery = ParsedUrlQuery,
+  D extends PreviewData = PreviewData
+> = GetServerSidePropsContext<Q, D> & { queryClient: QueryClient }
+
 export type GetServerSidePropsWithQueryClient<
   P extends { [key: string]: any } = { [key: string]: any },
   Q extends ParsedUrlQuery = ParsedUrlQuery,
   D extends PreviewData = PreviewData
 > = (
-  queryClient: QueryClient,
-  context: GetServerSidePropsContext<Q, D>
+  context: GSSPContext<Q, D>
 ) => Promise<GetServerSidePropsResult<P>>
 
-export const withQueryClient = (
+export const gSSPWithQueryClient = (
   fn: GetServerSidePropsWithQueryClient,
   queryClientConfig?: QueryClientConfig
 ): GetServerSideProps => {
   const queryClient = new QueryClient(queryClientConfig)
 
   return async (ctx) => {
-    const result = await fn(queryClient, ctx)
+    const result = await fn({ ...ctx, queryClient })
     Object.assign(result, {
       props: { queryClientState: dehydrate(queryClient) }
     })
@@ -66,6 +68,17 @@ export const withQueryClient = (
   }
 }
 
+/**
+ * Helper to be used in `_app.tsx` to create query client.
+ * ```ts
+    const queryClient = useCreateQueryClient()
+    return (
+      <NextTsApiProvider queryClient={queryClient} pageProps={pageProps}>
+        {children}
+      </NextTsApiProvider>
+    )
+ * ```
+ */
 export const useCreateQueryClient = (queryClientConfig?: QueryClientConfig) => {
-  return useState(new QueryClient(queryClientConfig))[0]
+  return useState(() => new QueryClient(queryClientConfig))[0]
 }
