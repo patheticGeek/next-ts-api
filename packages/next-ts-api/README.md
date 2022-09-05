@@ -15,7 +15,6 @@ You can directly import those hooks and use them in any page.
 
    ```js
    const { withNextTsAPI } = require("next-ts-api");
-
    module.exports = withNextTsAPI({});
    ```
 
@@ -59,6 +58,8 @@ You can directly import those hooks and use them in any page.
 
    // query named `getUser` will make hook named `useGetUserQuery`
    export const { useCreateUserMutation, useGetUserQuery } = userApi.client;
+   // these are server side functions
+   export const { createUserMutation, getUserQuery } = userApi.server;
    ```
 
    All api routes which you want hooks to be generated on should end with `.rq.ts`
@@ -66,13 +67,18 @@ You can directly import those hooks and use them in any page.
 1. Use the hooks in any page! Lets say `index.tsx`
 
    ```tsx
-   import { useCreateUserMutation, useGetUserQuery } from "./api/test.rq";
+   import { gSSPWithQueryClient } from "next-ts-api/client";
+   import {
+     useCreateUserMutation,
+     useGetUserQuery,
+     getUserQuery
+   } from "./api/test.rq";
 
-   export default function Home() {
-     const { data, refetch, isFetching } = useGetUserQuery({ name: "test" });
+   export default function Web() {
+     const { data, refetch, isFetching } = useGetUserQuery({ name: "geek" });
      const {
        mutate,
-       isLoading: isMutating,
+       isLoading: isMutLoading,
        data: mutData
      } = useCreateUserMutation();
 
@@ -81,17 +87,22 @@ You can directly import those hooks and use them in any page.
          <h1>Testing</h1>
          <h2>Query</h2>
          <p>
-           loading: {isFetching ? "true" : "false"}
-           greeting: {data?.greeting}
+           loading: {String(isFetching)}, greeting: {data?.greeting}
          </p>
          <button onClick={() => refetch()}>Refetch</button>
          <h2>Mutation</h2>
          <p>
-           loading: {isMutating ? "true" : "false"}
-           greeting: {mutData?.greeting}
+           loading: {String(isMutLoading)}, greeting: {mutData?.greeting}
          </p>
-         <button onClick={() => mutate({ name: "abcdef" })}>Refetch</button>
+         <button onClick={() => mutate({ name: "jeep" })}>Refetch</button>
        </div>
      );
    }
+
+   export const getServerSideProps = gSSPWithQueryClient(
+     async ({ req, queryClient }) => {
+       await getUserQuery({ req, queryClient }, { name: "geek" });
+       return { props: {} };
+     }
+   );
    ```

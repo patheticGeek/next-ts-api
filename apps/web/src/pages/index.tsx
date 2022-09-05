@@ -9,16 +9,16 @@ export default function Web() {
     <div>
       <h1>Testing</h1>
       <h2>Query</h2>
-      <p>loading: {isFetching ? 'true' : 'false'}, greeting: {data?.greeting}</p>
+      <p>loading: {String(isFetching)}, greeting: {data?.greeting}</p>
       <button onClick={() => refetch()}>Refetch</button>
       <h2>Mutation</h2>
-      <p>loading: {isMutLoading ? 'true' : 'false'}, greeting: {mutData?.greeting}</p>
+      <p>loading: {String(isMutLoading)}, greeting: {mutData?.greeting}</p>
       <button onClick={() => mutate({ name: 'jeep' })}>Refetch</button>
     </div>
   );
 }
 
 export const getServerSideProps = gSSPWithQueryClient(async ({ req, queryClient }) => {
-  await getUserQuery({ req, queryClient }, {name: 'geek'})
+  await getUserQuery({ req, queryClient }, { name: 'geek' })
   return { props: {} }
 })
