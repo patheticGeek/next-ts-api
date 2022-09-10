@@ -1,10 +1,14 @@
 module.exports = {
   root: true,
-  // This tells ESLint to load the config from the package `eslint-config-custom`
-  extends: ["custom"],
+  extends: ['next', 'turbo', 'prettier'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint/eslint-plugin', 'prettier', 'react-hooks'],
+  rules: {
+    'prettier/prettier': ['error']
+  },
   settings: {
     next: {
-      rootDir: ["apps/*/"],
-    },
-  },
-};
+      rootDir: ['apps/*/']
+    }
+  }
+}

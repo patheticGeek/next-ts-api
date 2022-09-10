@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.2.1",
-    "@tanstack/react-query-devtools": "^4.2.3",
+    "@tanstack/react-query-devtools": "^4.2.1",
     "next": "12.2.3",
     "next-ts-api": "workspace:^0.0.1",
     "react": "17.0.2",
@@ -21,7 +21,6 @@
     "@types/node": "^17.0.12",
     "@types/react": "17.0.48",
     "eslint": "7.32.0",
-    "eslint-config-custom": "workspace:*",
     "next-transpile-modules": "9.0.0",
     "tsconfig": "workspace:*",
     "typescript": "^4.5.3"
