@@ -1,0 +1,5 @@
+{
+  "main": "../dist/loader-page.js",
+  "module": "../dist/loader-page.mjs",
+  "types": "../dist/loader-page.d.ts"
+}
