@@ -1,5 +1,5 @@
-import { writeFileSync } from "fs";
-import { createApi } from "next-super-api";
+import { writeFileSync } from 'fs'
+import { createApi } from 'next-super-api'
 
 const userApi = createApi(async (params: { test: string }) => {
   writeFileSync('./test.txt', 'data')

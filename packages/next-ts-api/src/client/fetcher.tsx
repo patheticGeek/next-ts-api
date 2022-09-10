@@ -1,10 +1,20 @@
 import React, { createContext, useContext } from 'react'
 
-type FetcherParams = { route: string, type: 'query' | 'mutation', key: string, data: any, signal?: AbortSignal }
+type FetcherParams = {
+  route: string
+  type: 'query' | 'mutation'
+  key: string
+  data: any
+  signal?: AbortSignal
+}
 
 export type Fetcher = (params: FetcherParams) => Promise<any>
 
-export type CustomFetcherOptions = Omit<RequestInit, 'method' | 'body'> | ((params: Omit<FetcherParams, 'signal'>) => Omit<RequestInit, 'method' | 'body'>)
+export type CustomFetcherOptions =
+  | Omit<RequestInit, 'method' | 'body'>
+  | ((
+      params: Omit<FetcherParams, 'signal'>
+    ) => Omit<RequestInit, 'method' | 'body'>)
 
 /**
  * Create a fetcher from `fetch` by passing custom options
@@ -46,7 +56,11 @@ export const createFetcher = (fetchOptions: CustomFetcherOptions) => {
     })
 
     const body = JSON.stringify({ data })
-    const result = await fetch(`${route}?${urlParams.toString()}`, { body, ...options, signal })
+    const result = await fetch(`${route}?${urlParams.toString()}`, {
+      body,
+      ...options,
+      signal
+    })
     const parsed = await result.json()
     if (parsed.error) throw new Error(parsed.error)
     return parsed.result
@@ -59,7 +73,13 @@ const defaultFetcher = createFetcher({})
 
 const FetcherContext = createContext<Fetcher>(defaultFetcher)
 
-export const FetcherProvider = ({ children, fetcher = defaultFetcher }: { children: React.ReactNode; fetcher?: Fetcher }) => {
+export const FetcherProvider = ({
+  children,
+  fetcher = defaultFetcher
+}: {
+  children: React.ReactNode
+  fetcher?: Fetcher
+}) => {
   return (
     <FetcherContext.Provider value={fetcher}>
       {children}

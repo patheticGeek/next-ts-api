@@ -1,5 +1,5 @@
-const {withNextTsAPI} = require('next-ts-api')
+const { withNextTsAPI } = require('next-ts-api')
 
 module.exports = withNextTsAPI({
-  reactStrictMode: true,
-});
+  reactStrictMode: true
+})

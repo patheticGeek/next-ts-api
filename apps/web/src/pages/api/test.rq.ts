@@ -1,18 +1,18 @@
-import { createApi } from "next-ts-api";
+import { createApi } from 'next-ts-api'
 
 const userApi = createApi({
   getContext: async () => {
-    return ({ hello: 'hello' })
+    return { hello: 'hello' }
   },
   queries: {
     getUser: async (ctx, params: { name: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
       return { greeting: `${ctx.hello}, ${params.name}` }
     }
   },
   mutations: {
     createUser: async (ctx, params: { name: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 1500))
       return { greeting: `${ctx.hello}, ${params.name}` }
     }
   }

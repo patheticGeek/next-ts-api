@@ -1,6 +1,9 @@
-import { HandlerParams, HandlerResult } from "./types"
+import { HandlerParams, HandlerResult } from './types'
 
-export class ApiError<Params extends HandlerParams, Result extends HandlerResult> extends Error {
+export class ApiError<
+  Params extends HandlerParams,
+  Result extends HandlerResult
+> extends Error {
   params: Params
   data: Result
 

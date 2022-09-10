@@ -20,24 +20,24 @@ import {
 /**
  * React query types
  */
- export type UseTypedQuery<
- Data extends any,
- Result extends any,
- Error extends unknown = unknown
+export type UseTypedQuery<
+  Data extends any,
+  Result extends any,
+  Error extends unknown = unknown
 > = (
- data: Data,
- options?: Omit<UseQueryOptions<Result, Error>, 'queryKey' | 'queryFn'>
+  data: Data,
+  options?: Omit<UseQueryOptions<Result, Error>, 'queryKey' | 'queryFn'>
 ) => UseQueryResult<Result, Error>
 
 export type UseTypedMutation<
- Data extends any,
- Result extends any,
- Error extends unknown = unknown
+  Data extends any,
+  Result extends any,
+  Error extends unknown = unknown
 > = (
- options?: Omit<
-   UseMutationOptions<Result, Error, Data>,
-   'mutationKey' | 'mutationFn'
- >
+  options?: Omit<
+    UseMutationOptions<Result, Error, Data>,
+    'mutationKey' | 'mutationFn'
+  >
 ) => UseMutationResult<Result, Error, Data>
 
 export type GSSPContext<
@@ -49,9 +49,7 @@ export type GetServerSidePropsWithQueryClient<
   P extends { [key: string]: any } = { [key: string]: any },
   Q extends ParsedUrlQuery = ParsedUrlQuery,
   D extends PreviewData = PreviewData
-> = (
-  context: GSSPContext<Q, D>
-) => Promise<GetServerSidePropsResult<P>>
+> = (context: GSSPContext<Q, D>) => Promise<GetServerSidePropsResult<P>>
 
 export const gSSPWithQueryClient = (
   fn: GetServerSidePropsWithQueryClient,

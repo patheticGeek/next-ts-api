@@ -1,16 +1,16 @@
-import type { LoaderDefinition } from "webpack";
-import { simple } from 'acorn-walk';
+import type { LoaderDefinition } from 'webpack'
+import { simple } from 'acorn-walk'
 import { parse } from 'acorn'
-import path from "path";
-import { PACKAGE_CLIENT } from "./consts";
-import { processRegions, Region } from "./utils";
-import { SourceMapSource } from "webpack-sources";
+import path from 'path'
+import { PACKAGE_CLIENT } from './consts'
+import { processRegions, Region } from './utils'
+import { SourceMapSource } from 'webpack-sources'
 
 export type ClientLoaderOptions = {
-  projectDir: string;
-  pageExtensionsRegex: RegExp;
-  basePath: string;
-};
+  projectDir: string
+  pageExtensionsRegex: RegExp
+  basePath: string
+}
 
 const clientImport = `import { createApiClient } from '${PACKAGE_CLIENT}';`
 
@@ -25,16 +25,15 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
   const clientOnlyRegions: Region[] = []
   const regions: Region[] = []
 
-  const { projectDir, pageExtensionsRegex, basePath } =
-    this.getOptions();
+  const { projectDir, pageExtensionsRegex, basePath } = this.getOptions()
 
   const resource = path
     .relative(projectDir, this.resourcePath)
-    .replace(/^(src\/)?pages\//, "")
-    .replace(pageExtensionsRegex, "");
-  const apiRoute = `${basePath}/${resource}`;
+    .replace(/^(src\/)?pages\//, '')
+    .replace(pageExtensionsRegex, '')
+  const apiRoute = `${basePath}/${resource}`
 
-  const ast = parse(content, { ecmaVersion: "latest", sourceType: "module" });
+  const ast = parse(content, { ecmaVersion: 'latest', sourceType: 'module' })
 
   simple(ast, {
     VariableDeclaration(node: any) {
@@ -42,9 +41,9 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
       const createDeclaration = node?.declarations?.find((declaration: any) => {
         return declaration?.init?.callee?.name === 'createApi'
       })
-      if(!createDeclaration) return;
+      if (!createDeclaration) return
 
-      if(isServer) {
+      if (isServer) {
         /**
          * In server add the route path as 2nd param to createApi call
          * export const getQuery = createApi(..., "apiRoute")
@@ -66,17 +65,23 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
       }
     },
     ImportDeclaration(node: any) {
-      if(isServer) return
+      if (isServer) return
       // Remove all imports other than 'next-super-api/client'
-      if(node.type === 'ImportDeclaration' && node.source.value !== 'next-super-api/client') {
-        clientOnlyRegions.push({ type: 'replace', region: [node.start, node.end] })
+      if (
+        node.type === 'ImportDeclaration' &&
+        node.source.value !== 'next-super-api/client'
+      ) {
+        clientOnlyRegions.push({
+          type: 'replace',
+          region: [node.start, node.end]
+        })
       }
     }
   })
 
   // Not a file we need to worry about
-  if(regions.length === 0) {
-    return content;
+  if (regions.length === 0) {
+    return content
   }
 
   // apply the regions on the source code
@@ -84,7 +89,7 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
     new SourceMapSource(
       content,
       this.resourcePath,
-      typeof sourcemaps === "string" ? JSON.parse(sourcemaps) : sourcemaps
+      typeof sourcemaps === 'string' ? JSON.parse(sourcemaps) : sourcemaps
     ),
     !isServer ? [...regions, ...clientOnlyRegions] : regions
   )
@@ -95,8 +100,7 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
   ${replacedSource.source()}
   `.trim()
 
-  return finalSource;
-};
+  return finalSource
+}
 
-export default loader;
- 
+export default loader

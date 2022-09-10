@@ -1,5 +1,5 @@
-import type { LoaderDefinition } from "webpack";
-import { simple } from 'acorn-walk';
+import type { LoaderDefinition } from 'webpack'
+import { simple } from 'acorn-walk'
 import { parse } from 'acorn'
 
 const loader: LoaderDefinition = function (
@@ -10,7 +10,7 @@ const loader: LoaderDefinition = function (
   let argPos = { start: 0, end: 0 }
   let imports: string[] = []
 
-  const ast = parse(content, { ecmaVersion: "latest", sourceType: "module" });
+  const ast = parse(content, { ecmaVersion: 'latest', sourceType: 'module' })
 
   simple(ast, {
     VariableDeclaration(node: any) {
@@ -18,13 +18,16 @@ const loader: LoaderDefinition = function (
       const createDeclaration = node?.declarations?.find((declaration: any) => {
         return declaration?.init?.callee?.name === 'createApi'
       })
-      if(!createDeclaration) return;
-  
+      if (!createDeclaration) return
+
       // get the argument obj so we can pass it to create api handler
       argPos = createDeclaration.init.arguments[0]
     },
     ImportDeclaration(node: any) {
-      if(node.type === 'ImportDeclaration' && node.source.value !== 'next-ts-api') {
+      if (
+        node.type === 'ImportDeclaration' &&
+        node.source.value !== 'next-ts-api'
+      ) {
         imports.push(content.slice(node.start, node.end))
       }
     }
@@ -36,7 +39,7 @@ const loader: LoaderDefinition = function (
   export default createApiHandler(${content.slice(argPos.start, argPos.end)});
   `
 
-  return output;
-};
+  return output
+}
 
-export default loader;
+export default loader

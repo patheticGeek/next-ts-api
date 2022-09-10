@@ -1,7 +1,19 @@
-import { ApiError } from "./ApiError"
-import { ApiFetcher, ApiHandler, Handler, HandlerParams, HandlerResult } from "./types"
+import { ApiError } from './ApiError'
+import {
+  ApiFetcher,
+  ApiHandler,
+  Handler,
+  HandlerParams,
+  HandlerResult
+} from './types'
 
-export const createApi = <Params extends HandlerParams, Result extends HandlerResult>(handler: Handler<Params, Result>, _routePath?: string): ApiHandler<Params, Result> => {
+export const createApi = <
+  Params extends HandlerParams,
+  Result extends HandlerResult
+>(
+  handler: Handler<Params, Result>,
+  _routePath?: string
+): ApiHandler<Params, Result> => {
   const apiHandler: ApiHandler<Params, Result> = async (req, res) => {
     const params = JSON.parse(req.body).data as Params
     const result = await handler(params)

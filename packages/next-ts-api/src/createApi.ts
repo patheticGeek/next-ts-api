@@ -1,6 +1,10 @@
 import { GetServerSidePropsContext, NextApiRequest } from 'next'
 
-import { GSSPContext, UseTypedMutation, UseTypedQuery } from './client/react-query'
+import {
+  GSSPContext,
+  UseTypedMutation,
+  UseTypedQuery
+} from './client/react-query'
 
 /**
  * Resolver function
@@ -55,45 +59,69 @@ export type CreateApiSliceOptions<
   mutations: SliceMutations
 }
 
-type QueryHookKey<Key extends any> = Key extends string ? `use${Capitalize<Key>}Query` : Key
-type MutationHookKey<Key extends any> = Key extends string ? `use${Capitalize<Key>}Mutation` : Key
+type QueryHookKey<Key extends any> = Key extends string
+  ? `use${Capitalize<Key>}Query`
+  : Key
+type MutationHookKey<Key extends any> = Key extends string
+  ? `use${Capitalize<Key>}Mutation`
+  : Key
 type NewQueryKey<Key extends any> = Key extends string ? `${Key}Query` : Key
-type NewMutationKey<Key extends any> = Key extends string ? `${Key}Mutation` : Key
+type NewMutationKey<Key extends any> = Key extends string
+  ? `${Key}Mutation`
+  : Key
 
 type Hooks<
   SliceContextFnResult extends any | undefined,
   SliceQueries extends Queries<SliceContextFnResult>,
   SliceMutations extends Mutations<SliceContextFnResult>
 > = {
-  [QueryKey in keyof SliceQueries as QueryHookKey<QueryKey>]: 
-    SliceQueries[QueryKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
-      ? UseTypedQuery<Data, Result>
-      : undefined
+  [QueryKey in keyof SliceQueries as QueryHookKey<QueryKey>]: SliceQueries[QueryKey] extends Resolver<
+    SliceContextFnResult,
+    infer Data,
+    infer Result
+  >
+    ? UseTypedQuery<Data, Result>
+    : undefined
 } & {
-  [MutationKey in keyof SliceMutations as MutationHookKey<MutationKey>]: 
-    SliceMutations[MutationKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
-      ? UseTypedMutation<Data, Result>
-      : undefined
+  [MutationKey in keyof SliceMutations as MutationHookKey<MutationKey>]: SliceMutations[MutationKey] extends Resolver<
+    SliceContextFnResult,
+    infer Data,
+    infer Result
+  >
+    ? UseTypedMutation<Data, Result>
+    : undefined
 }
 
 type ReturnedQueries<
   SliceContextFnResult extends any | undefined,
-  SliceQueries extends Queries<SliceContextFnResult>,
+  SliceQueries extends Queries<SliceContextFnResult>
 > = {
-  [QueryKey in keyof SliceQueries as NewQueryKey<QueryKey>]: 
-    SliceQueries[QueryKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
-      ? (ctx: Pick<GSSPContext, 'req' | 'queryClient'>, data: Data) => Promise<Result>
-      : undefined
+  [QueryKey in keyof SliceQueries as NewQueryKey<QueryKey>]: SliceQueries[QueryKey] extends Resolver<
+    SliceContextFnResult,
+    infer Data,
+    infer Result
+  >
+    ? (
+        ctx: Pick<GSSPContext, 'req' | 'queryClient'>,
+        data: Data
+      ) => Promise<Result>
+    : undefined
 }
 
 type ReturnedMutations<
   SliceContextFnResult extends any | undefined,
   SliceMutations extends Mutations<SliceContextFnResult>
 > = {
-  [MutationKey in keyof SliceMutations as NewMutationKey<MutationKey>]:
-    SliceMutations[MutationKey] extends Resolver<SliceContextFnResult, infer Data, infer Result>
-      ? (ctx: Pick<GSSPContext, 'req' | 'queryClient'>, data: Data) => Promise<Result>
-      : undefined
+  [MutationKey in keyof SliceMutations as NewMutationKey<MutationKey>]: SliceMutations[MutationKey] extends Resolver<
+    SliceContextFnResult,
+    infer Data,
+    infer Result
+  >
+    ? (
+        ctx: Pick<GSSPContext, 'req' | 'queryClient'>,
+        data: Data
+      ) => Promise<Result>
+    : undefined
 }
 
 /**
@@ -105,7 +133,8 @@ export type ApiSlice<
   SliceMutations extends Mutations<SliceContextFnResult>
 > = {
   client: Hooks<SliceContextFnResult, SliceQueries, SliceMutations>
-  server: ReturnedQueries<SliceContextFnResult, SliceQueries> & ReturnedMutations<SliceContextFnResult, SliceMutations>
+  server: ReturnedQueries<SliceContextFnResult, SliceQueries> &
+    ReturnedMutations<SliceContextFnResult, SliceMutations>
 }
 
 /**
@@ -116,7 +145,11 @@ export const createApi = <
   SliceQueries extends Queries<SliceContextFnResult>,
   SliceMutations extends Mutations<SliceContextFnResult>
 >(
-  _options: CreateApiSliceOptions<SliceContextFnResult, SliceQueries, SliceMutations>
+  _options: CreateApiSliceOptions<
+    SliceContextFnResult,
+    SliceQueries,
+    SliceMutations
+  >
 ): ApiSlice<SliceContextFnResult, SliceQueries, SliceMutations> => {
   throw new Error('This code path should not be reachable')
 }
