@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev:tes-api": "turbo run dev --scope=next-ts-api --scope=web",
+    "dev:ts-api": "turbo run dev --scope=next-ts-api --scope=web",
     "dev:super-api": "turbo run dev --scope=next-super-api --scope=web-super-api",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
