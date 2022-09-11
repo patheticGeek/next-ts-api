@@ -1,9 +1,15 @@
-import { GetServerSideProps } from 'next'
-import { useQuery } from 'next-super-api/client'
+import { useEffect } from 'react'
+import { fetcher, gSSP, useQuery } from 'src/utils/api'
 import { getUser } from './api/test'
 
 export default function Web() {
+  // call in react
   const [data, { refetch, isFetching }] = useQuery(getUser, { test: 'hello' })
+
+  useEffect(() => {
+    // call outside react
+    fetcher(getUser, { test: 'hello' }).then(console.log)
+  }, [])
 
   return (
     <div>
@@ -17,6 +23,11 @@ export default function Web() {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+export const getServerSideProps = gSSP(async ({ prefetch }) => {
+  // call in ssr
+  const data = await prefetch(getUser, { test: 'hello' })
+
+  console.log(`SSR data:`, data)
+
   return { props: {} }
-}
+})
