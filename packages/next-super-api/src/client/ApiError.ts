@@ -1,4 +1,4 @@
-import { HandlerParams, HandlerResult } from './types'
+import { HandlerParams, HandlerResult } from '../types'
 
 export class ApiError<
   Params extends HandlerParams,

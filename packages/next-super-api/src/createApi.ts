@@ -1,6 +1,5 @@
-import { ApiError } from './ApiError'
 import {
-  ApiFetcher,
+  FetcherMeta,
   ApiHandler,
   Handler,
   HandlerParams,
@@ -12,24 +11,21 @@ export const createApi = <
   Result extends HandlerResult
 >(
   handler: Handler<Params, Result>,
-  _routePath?: string
+  route?: string
 ): ApiHandler<Params, Result> => {
   const apiHandler: ApiHandler<Params, Result> = async (req, res) => {
-    const params = JSON.parse(req.body).data as Params
+    const params = JSON.parse(req.body).data
     const result = await handler(params)
     res.status(result.status).send(result)
   }
 
-  const fetcher: ApiFetcher<Params, Result> = async (params) => {
-    const result = await handler(params)
-    if (result.status < 200 || result.status > 299) {
-      throw new ApiError('Api error occurred', params, result)
-    }
-    return result
+  const fetcherMeta: FetcherMeta<Params, Result> = {
+    handler,
+    route: route || 'api-route-build',
+    method: 'POST'
   }
-  fetcher._routePath = _routePath || 'api-handler'
 
-  apiHandler.fetcher = fetcher
+  apiHandler.fetcherMeta = fetcherMeta
 
   return apiHandler
 }

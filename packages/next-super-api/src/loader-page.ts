@@ -60,7 +60,7 @@ const loader: LoaderDefinition<ClientLoaderOptions> = function (
         regions.push({
           type: 'replace',
           region: [createDeclaration.init.start, createDeclaration.init.end],
-          content: `createApiClient("${apiRoute}");`
+          content: `createApiClient("${apiRoute}", "POST");`
         })
       }
     },
