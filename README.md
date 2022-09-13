@@ -1,1 +1,1 @@
-packages/next-ts-api/README.md
+packages/next-super-api/README.md
