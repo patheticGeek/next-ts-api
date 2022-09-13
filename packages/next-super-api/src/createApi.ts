@@ -15,7 +15,7 @@ export const createApi = <
 ): ApiHandler<Params, Result> => {
   const apiHandler: ApiHandler<Params, Result> = async (req, res) => {
     const params = JSON.parse(req.body).data
-    const result = await handler(params)
+    const result = await handler({ type: 'client', req }, params)
     res.status(result.status).send(result)
   }
 

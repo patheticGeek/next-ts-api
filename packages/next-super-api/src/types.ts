@@ -1,13 +1,17 @@
 import { QueryClientConfig } from '@tanstack/react-query'
-import { NextApiHandler } from 'next'
+import { GetServerSidePropsContext, NextApiHandler, NextApiRequest } from 'next'
 
 export type HandlerParams = undefined | Record<string, any>
 export type HandlerResult = { status: number; data: any }
 
+type NextContext =
+  | { type: 'ssr'; req: GetServerSidePropsContext['req'] }
+  | { type: 'client'; req: NextApiRequest }
+
 export type Handler<
   Params extends HandlerParams = undefined,
   Result extends HandlerResult = { status: number; data: undefined }
-> = (params: Params) => Promise<Result>
+> = (nextCtx: NextContext, params: Params) => Promise<Result>
 
 export type FetcherMeta<
   Params extends HandlerParams,

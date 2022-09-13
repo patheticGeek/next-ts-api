@@ -160,39 +160,43 @@ export const createClients = ({
       }
     ) => Promise<GetServerSidePropsResult<P>>
   ): GetServerSideProps<P, Q, D> => {
-    // a separate query client for each request
-    let queryClient: QueryClient | null = null
-
-    /**
-     * Function to prefetch data during ssr
-     */
-    const prefetch = async <
-      Params extends HandlerParams,
-      Result extends HandlerResult
-    >(
-      fetcherMeta: FetcherMeta<Params, Result>,
-      params: Params
-    ): Promise<Result['data']> => {
-      // only create query client on first prefetch
-      if (!queryClient) queryClient = new QueryClient(queryClientConfig)
-      // call the handler directly with params in ssr
-      const { status, data } = await fetcherMeta.handler(params)
-
-      if (status < 200 || status > 299) {
-        throw new ApiError('Api error occurred', params, data)
-      }
-
-      // add data to query client
-      queryClient.prefetchQuery(
-        [`${fetcherMeta.method} ${fetcherMeta.route}`, params] as const,
-        async () => data
-      )
-
-      return data
-    }
-
     // return a new getServerSideProps fn which wraps
     return async (context) => {
+      // a separate query client for each request
+      let queryClient: QueryClient | null = null
+
+      /**
+       * Function to prefetch data during ssr
+       */
+      const prefetch = async <
+        Params extends HandlerParams,
+        Result extends HandlerResult
+      >(
+        fetcherMeta: FetcherMeta<Params, Result>,
+        params: Params
+      ): Promise<Result['data']> => {
+        // only create query client on first prefetch
+        if (!queryClient) queryClient = new QueryClient(queryClientConfig)
+
+        // call the handler directly with params in ssr
+        const { status, data } = await fetcherMeta.handler(
+          { type: 'ssr', req: context.req },
+          params
+        )
+
+        if (status < 200 || status > 299) {
+          throw new ApiError('Api error occurred', params, data)
+        }
+
+        // add data to query client
+        queryClient.prefetchQuery(
+          [`${fetcherMeta.method} ${fetcherMeta.route}`, params] as const,
+          async () => data
+        )
+
+        return data
+      }
+
       const returnVal = await func({ ...context, prefetch })
       Object.assign(returnVal, {
         props: {

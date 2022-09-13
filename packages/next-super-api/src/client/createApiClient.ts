@@ -8,8 +8,7 @@ export const createApiClient = <
   method: string
 ): Pick<ApiHandler<Params, Result>, 'fetcherMeta'> => {
   const fetcherMeta: FetcherMeta<Params, Result> = {
-    ___params: undefined as any,
-    ___result: undefined as any,
+    handler: undefined as any,
     route,
     method
   }
