@@ -33,6 +33,7 @@ export default function Web() {
 export const getServerSideProps = gSSPWithQueryClient(
   async ({ req, queryClient }) => {
     await getUserQuery({ req, queryClient }, { name: 'geek' })
+
     return { props: {} }
   }
 )
